@@ -8,10 +8,12 @@ YELLOW="\033[1;33m"
 RED="\033[1;31m"
 RESET="\033[0m"
 
+# --- CONFIG ---
+
 REPO_SSH="git@github.com:Mechard-Organization/Ft_transcendence.git"
 LOGIN="$(whoami)"
 
-# --- Mapping login -> branche ---
+# --- MAPPAGE LOGIN → BRANCHE ---
 case "$LOGIN" in
   mechard)  BRANCH="maxime" ;;
   jealefev) BRANCH="jeanne" ;;
@@ -21,20 +23,19 @@ case "$LOGIN" in
   *)        BRANCH="$LOGIN" ;;
 esac
 
-# Affichages colorés (printf %b pour interpréter \033)
 printf '%b\n' "👤 Utilisateur détecté : ${BLUE}${LOGIN}${RESET}"
 printf '%b\n' "🌿 Branche associée : ${GREEN}${BRANCH}${RESET}"
 printf '\n'
 
-# --- Demande du nom de dossier (POSIX) ---
-printf '%b' "📁 Nom du dossier à créer pour le clone (${YELLOW}défaut : Ft_transcendence${RESET}) : "
+# --- DEMANDER NOM REPO ---
+printf '%b' "📁 Nom du dossier à créer pour le clone (${YELLOW}défaut:ft_transcendence${RESET}) : "
 IFS= read -r DIR || true
-: "${DIR:=Ft_transcendence}"   # valeur par défaut si vide
+: "${DIR:=ft_transcendence}"
 
 printf '%b\n' "📦 Le dépôt sera cloné dans : ${BLUE}${DIR}${RESET}"
 printf '\n'
 
-# --- Vérif SSH (facultatif) ---
+# --- CHECK SSH ---
 if ! ssh -o BatchMode=yes -T git@github.com 2>&1 | grep -q "success"; then
   printf '%b\n' "⚠️  ${RED}SSH GitHub non prêt (pas de clé ou agent non chargé).${RESET}"
   printf '%b\n' "   - Ajoute ta clé publique à GitHub : ${YELLOW}https://github.com/settings/keys${RESET}"
@@ -42,7 +43,7 @@ if ! ssh -o BatchMode=yes -T git@github.com 2>&1 | grep -q "success"; then
   printf '\n'
 fi
 
-# --- Clone ou MÀJ ---
+# --- CLONE OU MÀJ ---
 if [ -d "$DIR/.git" ]; then
   printf '%s\n' "📁 Répertoire déjà présent : $DIR"
   cd "$DIR"
@@ -58,7 +59,7 @@ else
   cd "$DIR"
 fi
 
-# --- Switch branche ---
+# --- SWITCH BRANCHE ---
 if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
   printf '%b\n' "🔀 Passage sur la branche locale ${GREEN}'${BRANCH}'${RESET}"
   git switch "$BRANCH"
