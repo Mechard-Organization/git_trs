@@ -28,7 +28,7 @@ printf '%b\n' "🌿 Branche associée : ${GREEN}${BRANCH}${RESET}"
 printf '\n'
 
 # --- DEMANDER NOM REPO ---
-printf '%b' "📁 Nom du dossier à créer pour le clone (${YELLOW}défaut:ft_transcendence${RESET}) : "
+printf '%b' "📁 Nom du dossier à créer pour le clone (${YELLOW}défaut: ft_transcendence${RESET}) : "
 IFS= read -r DIR || true
 : "${DIR:=ft_transcendence}"
 
