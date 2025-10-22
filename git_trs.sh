@@ -91,7 +91,7 @@ fi
 
 # --- CLONE OU MÀJ ---
 if [ -d "$DIR/.git" ]; then
-  printf '%b\n' "📁 Répertoire ${BLUE}${DIR}${RESET} déjà présent ici"
+  printf '%b\n' "📁 Répertoire ${BLUE}${DIR}${RESET} déjà présent"
   cd "$DIR"
   if ! /bin/git remote -v | grep -q "$REPO_SSH"; then
     printf '%b\n' "❌ ${RED}$DIR n'est pas un clone de $REPO_SSH${RESET}"
@@ -100,7 +100,7 @@ if [ -d "$DIR/.git" ]; then
   printf '%s\n' "🔄 Mise à jour du dépôt (fetch --all --prune)"
   /bin/git fetch --all --prune > /dev/null 2>&1
 else
-  printf '%b\n' "⬇️  Cloning 123 soit into '${BLUE} ${DIR} ${RESET}'... "
+  printf '%b\n' "⬇️  Cloning soit into '${BLUE} ${DIR} ${RESET}'... "
   git_clone_with_bar "$REPO_SSH" "$DIR"
   cd "$DIR"
 fi
