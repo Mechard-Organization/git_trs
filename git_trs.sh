@@ -91,7 +91,7 @@ fi
 
 # --- CLONE OU MÀJ ---
 if [ -d "$DIR/.git" ]; then
-  printf '%b\n' "📁 Répertoire ${BLUE}${DIR}${RESET} déjà présent"
+  printf '%b\n' "📁 Répertoire ${BLUE}${DIR}${RESET} déjà présent ici"
   cd "$DIR"
   if ! /bin/git remote -v | grep -q "$REPO_SSH"; then
     printf '%b\n' "❌ ${RED}$DIR n'est pas un clone de $REPO_SSH${RESET}"
