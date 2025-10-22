@@ -100,7 +100,7 @@ if [ -d "$DIR/.git" ]; then
   printf '%s\n' "🔄 Mise à jour du dépôt (fetch --all --prune)"
   /bin/git fetch --all --prune > /dev/null 2>&1
 else
-  printf '%b\n' "⬇️  Cloning soit into '${BLUE} ${DIR} ${RESET}'... "
+  printf '%b\n' "⬇️  Cloning into '${BLUE} ${DIR} ${RESET}'... "
   git_clone_with_bar "$REPO_SSH" "$DIR"
   cd "$DIR"
 fi
