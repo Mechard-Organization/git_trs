@@ -25,7 +25,7 @@ draw_bar() {
   i=1; while [ $i -le $filled ]; do printf "#"; i=$((i+1)); done
   i=1; while [ $i -le $empty ]; do printf "-"; i=$((i+1)); done
   printf "] %3d%%" "$p"
-  sleep 1000
+  sleep 100
 }
 
 # Clone avec barre
