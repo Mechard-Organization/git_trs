@@ -47,29 +47,29 @@ fi
 if [ -d "$DIR/.git" ]; then
   printf '%s\n' "📁 Répertoire déjà présent : $DIR"
   cd "$DIR"
-  if ! git remote -v | grep -q "$REPO_SSH"; then
+  if ! /bin/git remote -v | grep -q "$REPO_SSH"; then
     printf '%b\n' "❌ ${RED}$DIR n'est pas un clone de $REPO_SSH${RESET}"
     exit 1
   fi
   printf '%s\n' "🔄 Mise à jour du dépôt (fetch --all --prune)"
-  git fetch --all --prune
+  /bin/git fetch --all --prune > /dev/null 2>&1
 else
-  printf '%s\n' "⬇️  Clonage du dépôt..."
-  git clone "$REPO_SSH" "$DIR"
+  printf '%s\n' "⬇️  Cloning into '${BLUE}${DIR}${RESET}'... "
+  /bin/git clone "$REPO_SSH" "$DIR" > /dev/null 2>&1
   cd "$DIR"
 fi
 
 # --- SWITCH BRANCHE ---
-if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+if /bin/git show-ref --verify --quiet "refs/heads/$BRANCH"; then
   printf '%b\n' "🔀 Passage sur la branche locale ${GREEN}'${BRANCH}'${RESET}"
-  git switch "$BRANCH"
-elif git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+  /bin/git switch "$BRANCH" > /dev/null 2>&1
+elif /bin/git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
   printf '%b\n' "🌐 Création de la branche locale depuis ${GREEN}'origin/$BRANCH'${RESET}"
-  git switch -c "$BRANCH" --track "origin/$BRANCH"
+  /bin/git switch -c "$BRANCH" --track "origin/$BRANCH" > /dev/null 2>&1
 else
   printf '%b\n' "🆕 Création et publication de la branche ${GREEN}'${BRANCH}'${RESET}"
-  git switch -c "$BRANCH"
-  git push -u origin "$BRANCH"
+  /bin/git switch -c "$BRANCH" > /dev/null 2>&1
+  /bin/git push -u origin "$BRANCH" > /dev/null 2>&1
 fi
 
 printf '%s\n' "✅ Prêt sur la branche : $(git branch --show-current)"
