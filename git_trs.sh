@@ -13,6 +13,52 @@ RESET="\033[0m"
 REPO_SSH="git@github.com:Mechard-Organization/Ft_transcendence.git"
 LOGIN="$(whoami)"
 
+# --- UTILS ---
+has_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+# LOADING BAR (stdout propre)
+draw_bar() {
+  p=${1:-0}; w=42; filled=$(( p*w/100 )); empty=$(( w-filled ))
+  [ "$p" -lt 0 ] && p=0
+  [ "$p" -gt 100 ] && p=100
+  printf "\r%-18s [" "${2:-Clonage}"
+  i=1; while [ $i -le $filled ]; do printf "#"; i=$((i+1)); done
+  i=1; while [ $i -le $empty ]; do printf "-"; i=$((i+1)); done
+  printf "] %3d%%" "$p"
+}
+
+# Clone avec barre
+git_clone_with_bar() { # $1=REPO_SSH $2=DIR
+  repo="$1"; dir="$2"
+  if has_cmd stdbuf; then
+    LINEBUF="stdbuf -oL -eL"
+  else
+    LINEBUF="cat"
+  fi
+
+  # Masque curseur si possible
+  (tput civis) >/dev/null 2>&1 || true
+
+  # Lancement du clone avec parsing des phases
+  /bin/git clone --progress "$repo" "$dir" 2>&1 \
+  | $LINEBUF tr '\r' '\n' \
+  | awk '
+      /Receiving objects:/ { if (match($0, /([0-9]+)%/, m)) print "RECV " m[1]; next }
+      /Resolving deltas:/  { if (match($0, /([0-9]+)%/, m)) print "DELT " m[1]; next }
+      END { print "DONE 100" }
+    ' \
+  | while IFS=' ' read -r phase pct; do
+      case "$phase" in
+        RECV) draw_bar "$pct" "Receiving" ;;
+        DELT) draw_bar "$pct" "Resolving" ;;
+        DONE) draw_bar "100" "Terminé" ;;
+      esac
+    done
+
+  printf "\n"
+  (tput cnorm) >/dev/null 2>&1 || true
+}
+
 # --- MAPPAGE LOGIN → BRANCHE ---
 case "$LOGIN" in
   mechard)  BRANCH="maxime" ;;
@@ -55,7 +101,7 @@ if [ -d "$DIR/.git" ]; then
   /bin/git fetch --all --prune > /dev/null 2>&1
 else
   printf '%b\n' "⬇️  Cloning into '${BLUE} ${DIR} ${RESET}'... "
-  /bin/git clone "$REPO_SSH" "$DIR" > /dev/null 2>&1
+  git_clone_with_bar "$REPO_SSH" "$DIR" > /dev/null 2>&1
   cd "$DIR"
 fi
 
