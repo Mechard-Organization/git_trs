@@ -28,33 +28,25 @@ draw_bar() {
 }
 
 # Clone avec barre
-git_clone_with_bar() { # $1=REPO_SSH $2=DIR
+git_clone_with_bar() {
   repo="$1"; dir="$2"
-  if has_cmd stdbuf; then
-    LINEBUF="stdbuf -oL -eL"
-  else
-    LINEBUF="cat"
-  fi
-
-  # Masque curseur si possible
   (tput civis) >/dev/null 2>&1 || true
+  latest=0
 
-  # Lancement du clone avec parsing des phases
   /bin/git clone --progress "$repo" "$dir" 2>&1 \
-  | $LINEBUF tr '\r' '\n' \
-  | awk '
-      /Receiving objects:/ { if (match($0, /([0-9]+)%/, m)) print "RECV " m[1]; next }
-      /Resolving deltas:/  { if (match($0, /([0-9]+)%/, m)) print "DELT " m[1]; next }
-      END { print "DONE 100" }
-    ' \
-  | while IFS=' ' read -r phase pct; do
-      case "$phase" in
-        RECV) draw_bar "$pct" "Receiving" ;;
-        DELT) draw_bar "$pct" "Resolving" ;;
-        DONE) draw_bar "100" "Terminé" ;;
-      esac
+  | stdbuf -oL -eL tr '\r' '\n' \
+  | awk '/Receiving objects:/ {if (match($0, /([0-9]+)%/, m)) print m[1]; next}
+         /Resolving deltas:/ {if (match($0, /([0-9]+)%/, m)) print m[1]; next}' \
+  | while read -r pct; do
+      target=$pct
+      while [ "$latest" -lt "$target" ]; do
+        latest=$((latest+1))
+        draw_bar "$latest" "Clonage"
+        sleep 0.02
+      done
     done
 
+  draw_bar 100 "Terminé"
   printf "\n"
   (tput cnorm) >/dev/null 2>&1 || true
 }
