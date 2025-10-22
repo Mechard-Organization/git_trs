@@ -21,10 +21,10 @@ draw_bar() {
   p=${1:-0}; w=42; filled=$(( p*w/100 )); empty=$(( w-filled ))
   [ "$p" -lt 0 ] && p=0
   [ "$p" -gt 100 ] && p=100
-  printf "\r [" "${2:-Clonage}"
+  printf "\r ["
   i=1; while [ $i -le $filled ]; do printf "#"; i=$((i+1)); done
   i=1; while [ $i -le $empty ]; do printf "-"; i=$((i+1)); done
-  printf "] %3d%% %-18s" "$p"
+  printf "] %3d%% %-18s" "$p" "${2:-Clonage}"
 }
 
 # Clone avec barre
