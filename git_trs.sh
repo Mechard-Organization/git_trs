@@ -19,6 +19,13 @@ esac
 echo "👤 Utilisateur détecté : $LOGIN"
 echo "🌿 Branche associée : $BRANCH"
 
+# --- DEMANDER NOM REPO ---
+read -rp "📁 Nom du dossier à créer pour le clone (défaut : Ft_transcendence) : " DIR
+DIR="${DIR:-ft_transcendence}"
+
+echo "📦 Le dépôt sera cloné dans : $DIR"
+echo
+
 # --- CHECK SSH -----------------------------------------------------------
 if ! ssh -o BatchMode=yes -T git@github.com 2>&1 | grep -q "success"; then
   echo "⚠️  SSH GitHub non prêt (pas de clé ou agent non chargé)."
