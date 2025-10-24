@@ -56,7 +56,7 @@ case "$LOGIN" in
   mechard)  BRANCH="maxime" ;;
   jealefev) BRANCH="jeanne" ;;
   abutet)   BRANCH="lylou" ;;
-  mel-yand) BRANCH="medhi" ;;
+  mel-yand) BRANCH="mehdi" ;;
   ajamshid) BRANCH="abdul" ;;
   *)        BRANCH="$LOGIN" ;;
 esac
